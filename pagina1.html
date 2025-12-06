@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="icon-192.png">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lista de compras</title>
+<style type="text/css">
+
+:root {
+--color-primary: #3a5a40;
+--color-secondary: #588157;
+--color-danger: #e63946;
+--color-danger-hover: #c9303d;
+--color-background: #f1f7f8;
+--color-card: #ffffff;
+--color-text: #2c2c2c;
+--color-shadow: rgba(0, 0, 0, 0.1);
+}
+
+body{
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background-color: var(--color-background);
+color: var(--color-text);
+}
+
+.compras{
+max-width: 600px;
+margin: 50px auto;
+background-color: var(--color-card);
+padding: 30px;
+border-radius: 12px;
+box-shadow: 0 4px 20px var(--color-shadow);
+}
+
+ h1 {
+ text-align: center;
+color: var(--color-primary);
+font-size: 2em;
+margin-bottom: 20px;
+}
+
+input {
+width: 100%;
+padding: 12px; 
+margin-bottom: 20px;
+box-sizing: border-box;
+border: 1px solid #ccc;
+border-radius: 8px;
+transition: border-color 0.3s;
+font-size: 16px;
+}
+
+input:focus {
+border-color: var(--color-secondary);
+outline: none;
+}
+
+button {
+background-color: var(--color-primary);
+color: #fff;
+padding: 12px;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+width: 100%;
+margin-bottom: 12px;
+font-size: 16px;
+font-weight: bold;
+text-transform: uppercase;
+transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+button:hover {
+background-color: var(--color-secondary);
+box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); 
+}
+
+button:active {
+transform: translateY(2px); 
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);  
+}
+
+
+ul {
+list-style-type: none;
+padding: 0;
+}
+li {
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid #eee;
+padding: 12px 0;
+font-size: 1.1em;
+}
+li:last-child {
+border-bottom: none;
+}
+
+
+.eliminarBtn {
+cursor: pointer;
+color: var(--color-danger);
+margin-left: 15px;
+font-weight: bold;
+padding: 5px 10px;
+border-radius: 4px;
+transition: background-color 0.3s;
+}
+
+.eliminarBtn:hover {
+background-color: rgba(230, 57, 70, 0.1);
+}
+
+
+@media (max-width: 600px) {
+.compras {
+ margin: 20px 10px;
+ padding: 20px;
+}
+
+input, button {
+font-size: 16px;
+}
+}
+
+
+</style>
+
+
+</head>
+<body>
+<div class="compras">
+<h1>📝 Lista de compras</h1>
+<div>
+<input id="nuevoArticulo" placeholder="Escribe un artículo, ej: Leche, Huevos..." autofocus>
+<button onclick="agregarArticulo()">➕ Agregar Artículo</button>
+ <br>
+<ul id="listaArticulos">
+</ul>
+</div>
+</div>
+
+<button onclick="window.location.href='index.html'">Carrito de compras</button>
+
+<script>
+function agregarArticulo() {
+var nuevoArticulo = document.getElementById('nuevoArticulo').value;
+
+if (nuevoArticulo.trim() === '') {
+alert('Por favor, ingresa un artículo válido.');
+return;
+}
+
+var nuevoElemento = document.createElement('li');
+
+nuevoElemento.textContent = nuevoArticulo;
+
+var eliminarBtn = document.createElement('span');
+eliminarBtn.className = 'eliminarBtn';
+eliminarBtn.textContent = '❌ Eliminar';
+eliminarBtn.onclick = function() {
+eliminarArticulo(nuevoElemento);
+};
+
+nuevoElemento.appendChild(eliminarBtn);
+
+document.getElementById('listaArticulos').appendChild(nuevoElemento);
+
+document.getElementById('nuevoArticulo').value = '';
+}
+
+function eliminarArticulo(elemento) {
+elemento.parentNode.removeChild(elemento);
+}
+alert ("Bienvenido(a)lista de compras");
+ </script>
+</body>
+</html>

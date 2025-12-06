@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta name="theme-color" content="#3a5a40"/> <link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="theme-color" content="#3a5a40"/>
+    <meta name="description" content="Carrito de compras inteligente con control de presupuesto">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MiCarrito">
+
+    <title>Compras</title>
+
+    <link rel="manifest" href="manifest.json">
+
+
+    <style type="text/css">
+        
+        :root {
+            --color-primary: #3a5a40;      /* Verde oscuro*/
+            --color-secondary: #588157;    /* Verde claro*/
+            --color-danger: #e63946;       /* Rojo*/
+            --color-danger-hover: #c9303d; /*rojo intenso*/
+            --color-background: #f1f7f8;   /*Fondo muy claro*/
+            --color-card: #ffffff; /*blanco*/
+            --color-text: #2c2c2c; /*gris oscuro*/
+            --color-shadow: rgba(0, 0, 0, 0.1); /*sombra*/
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-background); 
+            color: var(--color-text);
+        }
+
+        #puntoDeVenta {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: var(--color-card);
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px var(--color-shadow); 
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600; 
+            color: var(--color-primary);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px; 
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--color-secondary);
+            outline: none;
+        }
+
+        button {
+            
+            background-color: var(--color-primary);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        }
+
+        button:hover {
+            background-color: var(--color-secondary);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);  */
+        }
+
+        button:active {
+            transform: translateY(2px); 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+
+        }
+
+        
+        .carrito-img-btn {
+            background-color: transparent !important; 
+            box-shadow: none !important; 
+            width: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .carrito-img-btn:hover, .carrito-img-btn:active {
+            transform: none !important;
+        }
+
+
+        .eliminar-btn {
+            background-color: var(--color-danger);
+            padding: 8px 15px;
+            font-size: 14px;
+            margin-left: 10px;
+            width: auto;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .eliminar-btn:hover {
+            background-color: var(--color-danger-hover);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .eliminar-btn:active {
+             transform: translateY(1px);
+             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            font-size: 1.1em;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .producto-info {
+            flex-grow: 1;
+            color: var(--color-text);
+        }
+
+        #total {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid var(--color-primary); 
+            font-weight: bold;
+            font-size: 1.4em;
+            color: var(--color-primary);
+        }
+
+        h1{
+            text-align: center;
+            color: var(--color-primary);
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* Estilos para el botón de instalación para pwa*/
+        #installButton {
+            display: none;
+            background-color: #2196F3;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: auto;
+            padding: 10px 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mejoras para móviles */
+        @media (max-width: 600px) {
+            #puntoDeVenta {
+                margin: 20px 10px;
+                padding: 20px;
+            }
+
+            input, button {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="puntoDeVenta">
+    <h1>🛒 Carrito de compras</h1>
+    <br><br>
+
+    <button class="carrito-img-btn" onclick="abrirOtraVentana()">
+      <img src="carrito-de-compras.png" width="50px" alt="carrito del super">
+    </button>
+    <br><br>
+
+    <div id="presupuesto">Presupuesto:</div>
+    <input type="number" id="presupuestoInput" placeholder="Ingrese el presupuesto" value="0">
+    <button onclick="resetearPresupuesto()">Resetear Presupuesto</button>
+    <br><br>
+
+    <div>
+        <label for="producto">Producto:</label>
+        <input type="text" id="producto" placeholder="Nombre del producto">
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" placeholder="Cantidad" value="1">
+        <label for="precio">Precio $:</label>
+        <input type="number" id="precio" placeholder="Precio">
+        <button onclick="agregarProducto()">➕ Agregar Producto</button>
+    </div>
+
+    <ul id="listaProductos"></ul>
+
+    <div id="total">
+        <p>Total: $<span id="totalAmount">0.00</span></p>
+    </div>
+
+    <button onclick="eliminarTodosLosProductos()" style="background-color: var(--color-danger); margin-top: 10px;">
+        🗑️ Eliminar Todos los Productos
+    </button>
+</div>
+
+<button id="installButton">📲 Instalar App</button>
+
+<script type="text/javascript">
+let productos = [];
+let totalAmount = 0;
+let presupuesto = 0;
+let alertaMostrada = false;
+
+function agregarProducto() {
+    const nombreProducto = document.getElementById("producto").value;
+    const precioProducto = parseFloat(document.getElementById("precio").value);
+    const cantidadProducto = parseInt(document.getElementById("cantidad").value) || 1;
+
+    if (nombreProducto && !isNaN(precioProducto) && precioProducto > 0 && cantidadProducto > 0) {
+        const producto = { 
+            nombre: nombreProducto, 
+            precio: precioProducto, 
+            cantidad: cantidadProducto,
+            id: Date.now()
+        };
+        productos.push(producto);
+
+        actualizarListaProductos();
+        calcularTotal();
+        limpiarCampos();
+        actualizarColorPresupuesto();
+        verificarPresupuesto();
+        
+        // Guardar en localStorage
+        guardarEnLocalStorage();
+    } else {
+        alert("Ingresa un nombre, un precio válido y una cantidad mayor a 0 para el producto.");
+    }
+}
+
+function actualizarListaProductos() {
+    const listaProductos = document.getElementById("listaProductos");
+    listaProductos.innerHTML = "";
+
+    productos.forEach((producto, index) => {
+        const li = document.createElement("li");
+        
+        const productoInfo = document.createElement("div");
+        productoInfo.className = "producto-info";
+        productoInfo.textContent = `${producto.nombre} - Cantidad: ${producto.cantidad} - $${(producto.precio * producto.cantidad).toFixed(2)}`;
+        
+        const eliminarBtn = document.createElement("button");
+        eliminarBtn.textContent = "Eliminar";
+        eliminarBtn.className = "eliminar-btn";
+        eliminarBtn.onclick = function() {
+            eliminarProducto(index);
+        };
+        
+        li.appendChild(productoInfo);
+        li.appendChild(eliminarBtn);
+        listaProductos.appendChild(li);
+    });
+}
+
+function eliminarProducto(index) {
+    if (confirm(`¿Estás seguro de que quieres eliminar "${productos[index].nombre}" del carrito?`)) {
+        productos.splice(index, 1);
+        actualizarListaProductos();
+        calcularTotal();
+        actualizarColorPresupuesto();
+        alertaMostrada = false;
+        verificarPresupuesto();
+        guardarEnLocalStorage();
+    }
+}
+
+function eliminarTodosLosProductos() {
+    if (productos.length === 0) {
+        alert("El carrito ya está vacío.");
+        return;
+    }
+    
+    if (confirm(`¿Estás seguro de que quieres eliminar TODOS los productos del carrito? (${productos.length} productos)`)) {
+        productos = [];
+        actualizarListaProductos();
+        calcularTotal();
+        actualizarColorPresupuesto();
+        alertaMostrada = false;
+        guardarEnLocalStorage();
+        alert("✅ Todos los productos han sido eliminados del carrito.");
+    }
+}
+
+function calcularTotal() {
+    totalAmount = productos.reduce((total, producto) => total + producto.precio * producto.cantidad, 0);
+    document.getElementById("totalAmount").textContent = totalAmount.toFixed(2);
+}
+
+function actualizarColorPresupuesto() {
+    const presupuestoElement = document.getElementById("presupuesto");
+    const presupuestoInput = document.getElementById("presupuestoInput");
+
+    presupuesto = parseFloat(presupuestoInput.value) || 0;
+
+    if (totalAmount > presupuesto && presupuesto > 0) {
+        presupuestoElement.style.color = "red";
+    } else {
+        presupuestoElement.style.color = "black";
+        alertaMostrada = false;
+    }
+}
+
+function verificarPresupuesto() {
+    const presupuestoInput = document.getElementById("presupuestoInput");
+    presupuesto = parseFloat(presupuestoInput.value) || 0;
+    
+    if (presupuesto > 0 && totalAmount > presupuesto && !alertaMostrada) {
+        alert(`⚠️ ¡ALERTA DE PRESUPUESTO!\n\nHas superado tu presupuesto de $${presupuesto.toFixed(2)}\nTotal actual: $${totalAmount.toFixed(2)}\nExcedente: $${(totalAmount - presupuesto).toFixed(2)}`);
+        alertaMostrada = true;
+    }
+}
+
+function limpiarCampos() {
+    document.getElementById("producto").value = "";
+    document.getElementById("precio").value = "";
+    document.getElementById("cantidad").value = "1";
+}
+
+function resetearPresupuesto() {
+    document.getElementById("presupuestoInput").value = "0";
+    presupuesto = 0;
+    alertaMostrada = false;
+    actualizarColorPresupuesto();
+    guardarEnLocalStorage();
+}
+
+function abrirOtraVentana() {
+    var url = 'pagina1.html';
+    var opciones = 'width=800,height=600,scrollbars=yes';
+    window.open(url, '_blank', opciones);
+}
+
+// ========== FUNCIONALIDAD PWA ==========
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js')
+            .then(function(registration) {
+                console.log('Service Worker registrado con éxito:', registration.scope);
+            })
+            .catch(function(error) {
+                console.log('Error al registrar Service Worker:', error);
+            });
+    });
+}
+
+// LocalStorage para persistencia
+function guardarEnLocalStorage() {
+    const datos = {
+        productos: productos,
+        presupuesto: document.getElementById("presupuestoInput").value,
+        total: totalAmount
+    };
+    localStorage.setItem('carritoData', JSON.stringify(datos));
+}
+
+function cargarDesdeLocalStorage() {
+    const datosGuardados = localStorage.getItem('carritoData');
+    if (datosGuardados) {
+        const datos = JSON.parse(datosGuardados);
+        productos = datos.productos || [];
+        document.getElementById("presupuestoInput").value = datos.presupuesto || "0";
+        actualizarListaProductos();
+        calcularTotal();
+        actualizarColorPresupuesto();
+    }
+}
+
+// Instalación de PWA
+let deferredPrompt;
+const installButton = document.getElementById('installButton');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installButton.style.display = 'block';
+    
+    installButton.addEventListener('click', () => {
+        installButton.style.display = 'none';
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('Usuario aceptó instalar la PWA');
+            }
+            deferredPrompt = null;
+        });
+    });
+});
+
+// Event listeners
+document.getElementById('presupuestoInput').addEventListener('input', function() {
+    actualizarColorPresupuesto();
+    verificarPresupuesto();
+    guardarEnLocalStorage();
+});
+
+// Cargar datos al iniciar
+window.addEventListener('load', function() {
+    cargarDesdeLocalStorage();
+    
+    // Detectar si está en modo standalone (PWA instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('Ejecutándose como PWA instalada');
+    }
+});
+
+// Manejar conexión/desconexión
+window.addEventListener('online', function() {
+    console.log('Conexión restaurada');
+});
+
+window.addEventListener('offline', function() {
+    console.log('Sin conexión - Modo offline activado');
+});
+alert("oprime el carrito(boton) de la lista")
+</script>
+</body>
+</html>
