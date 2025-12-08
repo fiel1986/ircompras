@@ -146,36 +146,106 @@ font-size: 16px;
 <button onclick="window.location.href='index.html'">Carrito de compras</button>
 
 <script>
+//  Array global para mantener la lista en la memoria del script
+// Lo usaremos como el 'modelo' antes de guardarlo en localStorage
+let listaDeCompras = [];
+
+// Función para inicializar y cargar la lista al inicio
+function cargarListaInicial() {
+    //  Recuperar la lista del almacenamiento local
+    const listaGuardada = localStorage.getItem('listaDeCompras');
+
+    if (listaGuardada) {
+        //  Si hay datos, los parseamos (de texto JSON a Array JS)
+        listaDeCompras = JSON.parse(listaGuardada);
+    } else {
+        // Si no hay nada, inicializamos la lista con un array vacío
+        listaDeCompras = [];
+    }
+
+    //  Renderizar (dibujar) la lista en el DOM
+    renderizarLista();
+}
+
+
+function renderizarLista() {
+    const listaArticulosDOM = document.getElementById('listaArticulos');
+    
+    listaArticulosDOM.innerHTML = '';
+
+    listaDeCompras.forEach(articuloTexto => {
+        
+        const nuevoElemento = document.createElement('li');
+        nuevoElemento.textContent = articuloTexto;
+
+        const eliminarBtn = document.createElement('span');
+        eliminarBtn.className = 'eliminarBtn';
+        eliminarBtn.textContent = '❌ Eliminar';
+        
+        
+        eliminarBtn.onclick = function() {
+            eliminarArticulo(nuevoElemento, articuloTexto); 
+        };
+
+        nuevoElemento.appendChild(eliminarBtn);
+        listaArticulosDOM.appendChild(nuevoElemento);
+    });
+}
+
+// Función para guardar el array actual en localStorage
+function guardarLista() {
+    // Convertir el Array de JavaScript a una cadena de texto JSON
+    const listaJSON = JSON.stringify(listaDeCompras);
+    
+    // Guardar la cadena de texto en localStorage
+    localStorage.setItem('listaDeCompras', listaJSON);
+}
+
+
 function agregarArticulo() {
-var nuevoArticulo = document.getElementById('nuevoArticulo').value;
+    var inputElemento = document.getElementById('nuevoArticulo');
+    var nuevoArticulo = inputElemento.value.trim();
 
-if (nuevoArticulo.trim() === '') {
-alert('Por favor, ingresa un artículo válido.');
-return;
+    if (nuevoArticulo === '') {
+        alert('Por favor, ingresa un artículo válido.');
+        return;
+    }
+
+    //  Agregar al array en memoria
+    listaDeCompras.push(nuevoArticulo);
+
+    //  Guardar el nuevo estado del array en localStorage
+    guardarLista();
+
+    //  Volver a dibujar toda la lista (opcional, podrías solo agregar el nuevo <li>, pero renderizar es más seguro)
+    renderizarLista(); 
+
+    //  Limpiar el input
+    inputElemento.value = '';
 }
 
-var nuevoElemento = document.createElement('li');
 
-nuevoElemento.textContent = nuevoArticulo;
-
-var eliminarBtn = document.createElement('span');
-eliminarBtn.className = 'eliminarBtn';
-eliminarBtn.textContent = '❌ Eliminar';
-eliminarBtn.onclick = function() {
-eliminarArticulo(nuevoElemento);
-};
-
-nuevoElemento.appendChild(eliminarBtn);
-
-document.getElementById('listaArticulos').appendChild(nuevoElemento);
-
-document.getElementById('nuevoArticulo').value = '';
+function eliminarArticulo(elementoDOM, textoArticulo) {
+    //  Encontrar el índice del artículo a eliminar en el array
+    const indice = listaDeCompras.indexOf(textoArticulo);
+    
+    if (indice > -1) {
+        //  Eliminar el artículo del array en memoria (solo 1 elemento a partir de ese índice)
+        listaDeCompras.splice(indice, 1);
+        
+        //  Guardar el nuevo estado del array en localStorage
+        guardarLista();
+        
+        // Eliminar el elemento del DOM (HTML)
+        elementoDOM.parentNode.removeChild(elementoDOM);
+    }
 }
 
-function eliminarArticulo(elemento) {
-elemento.parentNode.removeChild(elemento);
-}
-alert ("Bienvenido(a)lista de compras");
+
+cargarListaInicial();
+
+alert("Bienvenido(a) lista de compras");
  </script>
 </body>
+
 </html>
